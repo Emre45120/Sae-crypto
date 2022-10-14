@@ -46,6 +46,12 @@ def indice_coincidence(message):
     return num
 
 def longueur_cle(message):
+    """
+    Il prend un message en entrée et renvoie la longueur de la clé utilisée pour le chiffrer
+    
+    :param message: le message à déchiffrer
+    :return: La longueur de la clé.
+    """
     texte = traiter_message(message)
     seuil = 0.065
     sous_chaine = ""
@@ -58,7 +64,3 @@ def longueur_cle(message):
         cpt += 1
         sous_chaine = ""
 
-
-message ="UMHRTAMGCILTZOEYLMVNPAPZWTVAFVXIOZGTMIUIMINVNPAPZWAWHGMPZHRMDRVZQPTDEJZZHRXTYPVHZVXAIXMNLMDZZTSYDZIXTMYRRDTDEJZZHRXTYPVIERVZQPKV"
-
-print(longueur_cle(message))

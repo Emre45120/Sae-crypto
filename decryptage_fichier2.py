@@ -1,4 +1,6 @@
-from interval import interval
+ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+MESSAGE = "Dwi gsftn seebvzx ezjg jzzo. Zp ldvzx npvlh. Tt jlzcqo jsy dvjmdbvj, wnzpke wi ilme. Qg wetavzx owpo. Yy jmlme qiumdbdege ujexlqo uy qipssfzb. Lr nimzpwwi, gpfa gfycl ll'yy ogrw, atpj wzcmu uf'ci ksnade, twcn gvznjeh bc'pe fzcmusy, vje pzqi, jsyvv kvzqn tsfxn. Uy niirp Didex-Ximkmy, ci tplxjkmd xgrmybdw wtoirplqo lr npvceyl llm ainjetb."
+
 
 
 def traiter_message(message):
@@ -64,3 +66,4 @@ def longueur_cle(message):
         cpt += 1
         sous_chaine = ""
 
+# def recherche_cle(message,lgCl):

@@ -43,7 +43,7 @@ class Vigenere:
         num = 0
         texte = Vigenere.traiter_texte(message)
         dico = Vigenere.dico_freq(texte)
-        for i in range(26):
+        for i in range(LONGUEUR_ALPHABET):
             if len(texte) > 1 :
                 # Si la lettre est présente dans le texte au moins 2 fois
                 if ALPHABET[i] in dico.keys() and dico[ALPHABET[i]] > 1 : 
@@ -120,7 +120,7 @@ class Vigenere:
         ind_l_cle = 0
         texte = Vigenere.traiter_texte(message)
         while ind_l_message < len(texte):
-            ind_carac_decode = (ALPHA[texte[ind_l_message]]-ALPHA[clef[ind_l_cle]])%26 # On calcule l'indice de la lettre décodée
+            ind_carac_decode = (ALPHA[texte[ind_l_message]]-ALPHA[clef[ind_l_cle]])%LONGUEUR_ALPHABET # On calcule l'indice de la lettre décodée
             res += ALPHABET[ind_carac_decode] 
             ind_l_message+=1
             ind_l_cle+=1
@@ -128,10 +128,8 @@ class Vigenere:
                 ind_l_cle = 0 # On recommence à la première lettre
         return res
 
-MESSAGE = "Dwi gsftn seebvzx ezjg jzzo. Zp ldvzx npvlh. Tt jlzcqo jsy dvjmdbvj, wnzpke wi ilme. Qg wetavzx owpo. Yy jmlme qiumdbdege ujexlqo uy qipssfzb. Lr nimzpwwi, gpfa gfycl ll'yy ogrw, atpj wzcmu uf'ci ksnade, twcn gvznjeh bc'pe fzcmusy, vje pzqi, jsyvv kvzqn tsfxn. Uy niirp Didex-Ximkmy, ci tplxjkmd xgrmybdw wtoirplqo lr npvceyl llm ainjetb."
 
 
-print(Vigenere.decoder_vigenere(MESSAGE,Vigenere.trouver_clef(MESSAGE)))
 
 
 

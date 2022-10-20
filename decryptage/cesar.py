@@ -1,4 +1,4 @@
-from email import message
+
 import math 
 import string
 
@@ -68,6 +68,15 @@ class Cesar:
                 d_mini = d_curr
         print(decal_mini)
         return Cesar.decal(message,decal_mini- 26%26)
-MESSAGE = "Zc krgfkr u'le ufzxk le rzi drikzrc jli c'fscfex tyrjjzj ul mrjzjkrj.Zc flmizk jfe wizxf dlirc, zc gizk ul crzk wifzu, zc slk le xireu sfc. Zc j'rgrzjrzk. Zc j'rjjzk jli jfe tfjp, zc gizk le aflierc hl'zc gritflilk u'le rzi uzjkirzk. Zc rccldr le tzxrizccf hl'zc wldr aljhl'rl sflk hlfzhl'zc kiflmrk jfe griwld ziizkrek. Zc kfljjr."
 
-print(Cesar.decode(MESSAGE))
+    @staticmethod
+    def decalage(message):
+        d_mini = Cesar.dist_freq_fr(message)
+        decal_mini = 0
+        for d in range(1,26):
+            d_curr = Cesar.dist_freq_fr(Cesar.decal(message ,d))
+            if d_curr < d_mini :
+                decal_mini = d
+                d_mini = d_curr
+        return decal_mini
+

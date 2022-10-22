@@ -1,3 +1,4 @@
+from ctypes.wintypes import LONG
 from math import *
 
 ALPHABET = { 'A':0 , 'B':1 , 'C':2 , 'D':3 , 'E':4 , 'F':5 , 'G':6 , 'H':7 , 'I':8 , 'J':9 , 'K':10 , 'L':11 , 'M':12 , 'N':13 , 'O':14 , 'P':15 , 'Q':16 , 'R':17 , 'S':18 , 'T':19 , 'U':20 , 'V':21 , 'W':22 , 'X':23 , 'Y':24 , 'Z':25 }
@@ -22,7 +23,63 @@ FREQUENCES_LETTRES = {
     }
 }
 
+def decode_cesar(texte:str, decalage:int) -> str:
+    """ Décode un texte chiffré avec le chiffrement de César
+
+    Args:
+        texte (str): Le texte à décoder
+        decalage (int): Le décalage à appliquer
+
+    Returns:
+        str: Le texte décodé
+    """    
+    resultat = ""
+    for lettre in texte :
+        new = ord(lettre) + decalage
+         
+        if 65 <= ord(lettre) <= 90 :    
+            if new > 90 :               
+                new -= 26
+            resultat += chr(new)        
+        elif 97 <= ord(lettre) <= 122 : 
+            if new > 122 :              
+                new -= 26
+            resultat += chr(new)        
+        else :
+            resultat += lettre   
+    return resultat
+
+def trouver_decalage(texteChiffre:str) -> int:
+    """ Permet de trouver le décalage utilisé pour chiffrer un texte
+
+    Args:
+        texteChiffre (str): Le texte chiffré à analyser
+
+    Returns:
+        int: Le décalage utilisé
+    """    
+    max = None
+    valeurEuclid = 0
+    decalage = None
+    for d in range(1,26):
+        texte = decode_cesar(texteChiffre, d)
+        valeurEuclid = euclidian_diff(texte,'fr')
+        if max is None or valeurEuclid < max:
+            max = valeurEuclid
+            decalage = d
+    return decalage
+
+
 def caesar(text:str, cle:int) -> str:
+    """ Chiffre un texte avec le chiffrement de César
+
+    Args:
+        text (str): Le texte à chiffrer
+        cle (int): La clé à utiliser
+
+    Returns:
+        str: Le texte chiffré
+    """    
     result = ""
 
     for lettre in text.lower():
@@ -34,9 +91,25 @@ def caesar(text:str, cle:int) -> str:
     return result
 
 def convertir_en_texte(text:str) -> str:
+    """ Convertit un texte en minuscule et enlève les caractères spéciaux
+
+    Args:
+        text (str): Le texte à convertir
+
+    Returns:
+        str: Le texte converti
+    """    
     return "".join([c for c in text if c.isalpha()]).lower()
 
 def get_occurence_des_dicts(text:str) -> "dict[int, int]":
+    """ Retourne un dictionnaire contenant le nombre d'occurence de chaque lettre
+
+    Args:
+        text (str): Le texte à analyser
+
+    Returns:
+        dict[int, int]: Le dictionnaire contenant le nombre d'occurence de chaque lettre
+    """    
     occurences = dict()
 
     for lettre in text:
@@ -46,9 +119,19 @@ def get_occurence_des_dicts(text:str) -> "dict[int, int]":
         else:
             occurences[ascii_char] = 1
     
+    for elem in occurences:
+        (occurences[elem] * 100 / len(text))
     return occurences
 
 def get_indice_de_coicidence(text:str) -> int:
+    """ Retourne l'indice de coïncidence d'un texte
+
+    Args:
+        text (str): Le texte à analyser
+
+    Returns:
+        int: L'indice de coïncidence du texte
+    """    
     occurences = get_occurence_des_dicts(text)
     indice_coincidence = 0.0
     text_len = len(text)
@@ -59,6 +142,15 @@ def get_indice_de_coicidence(text:str) -> int:
     return indice_coincidence / (text_len * (text_len - 1))
 
 def get_longueur_cle(text:str, lang:str) -> int or None:
+    """ Retourne la longueur de la clé utilisée pour chiffrer un texte
+
+    Args:
+        text (str): Le texte à analyser
+        lang (str): La langue du texte
+
+    Returns:
+        int or None: La longueur de la clé utilisée ou None si la longueur n'a pas pu être trouvée
+    """    
     res = (None, None)
 
     for i in range(1, 20):
@@ -69,6 +161,15 @@ def get_longueur_cle(text:str, lang:str) -> int or None:
     return res[0]
 
 def trouver_cle_vigenere(text:str, lang:str) -> str:
+    """ Retourne la clé utilisée pour chiffrer un texte avec le chiffrement de Vigenère
+
+    Args:
+        text (str): Le texte à analyser
+        lang (str): La langue du texte
+
+    Returns:
+        str: La clé utilisée
+    """    
     res = ""
 
     if lang in FREQUENCES_LETTRES:
@@ -85,6 +186,15 @@ def trouver_cle_vigenere(text:str, lang:str) -> str:
     return res
 
 def vigenere(text:str, cle:"list[int]") -> str:
+    """ Chiffre un texte avec le chiffrement de Vigenère
+
+    Args:
+        text (str): Le texte à chiffrer
+        cle (list[int]): La clé à utiliser
+
+    Returns:
+        str: Le texte chiffré
+    """    
     res = ""
     cle_len = len(cle)
     cle_indice = 0
@@ -99,10 +209,28 @@ def vigenere(text:str, cle:"list[int]") -> str:
     return res
 
 def decode_vigenere(text:str, lang:str) -> str:
+    """ Déchiffre un texte avec le chiffrement de Vigenère
+
+    Args:
+        text (str): Le texte à déchiffrer
+        lang (str): La langue du texte
+
+    Returns:
+        str: Le texte déchiffré
+    """    
     return vigenere(text, [-ord(n) for n in trouver_cle_vigenere(text, lang)])
 
 
 def euclidian_diff(text:str, lang:str) -> float:
+    """ Retourne la différence entre l'indice de coïncidence du texte et la moyenne de l'indice de coïncidence de la langue
+
+    Args:
+        text (str): Le texte à analyser
+        lang (str): La langue du texte
+
+    Returns:
+        float: La différence entre l'indice de coïncidence du texte et la moyenne de l'indice de coïncidence de la langue
+    """    
     text_convertit = convertir_en_texte(text, lang)
     occurences = get_occurence_des_dicts(text_convertit)
     sum = 0
@@ -111,13 +239,40 @@ def euclidian_diff(text:str, lang:str) -> float:
 
     return sqrt(sum)
 
-def est_une_lettre(lettre:str, lang:str):
+def est_une_lettre(lettre:str, lang:str) -> bool:
+    """ Retourne si une lettre est une lettre de la langue
+
+    Args:
+        lettre (str): La lettre à analyser
+        lang (str): La langue du texte
+
+    Returns:
+        bool: Retourne True si la lettre est une lettre de la langue, False sinon
+    """    
     return lettre in FREQUENCES_LETTRES[lang]
 
 def convertir_en_texte(text:str, lang:str) -> str:
+    """ Retourne le texte sans les caractères spéciaux
+
+    Args:
+        text (str): Le texte à analyser
+        lang (str): La langue du texte
+
+    Returns:
+        str: Le texte sans les caractères spéciaux
+    """    
     return "".join([c for c in text if est_une_lettre(c, lang)]).lower()
 
-def bezout(a,b):
+def bezout(a:float, b:float) -> tuple:
+    """ Retourne le PGCD de a et b ainsi que les coefficients de Bézout
+
+    Args:
+        a (_type_): Le premier nombre
+        b (_type_): Le deuxième nombre
+
+    Returns:
+        tuple: Le PGCD de a et b ainsi que les coefficients de Bézout
+    """    
     ua, va, ub, vb = 1, 0, 0, 1
     while a !=0:
         q, r = divmod(b,a) # q <= b//a et r <= b%a
@@ -125,10 +280,44 @@ def bezout(a,b):
         b, a, ub, vb, ua, va = a, r, ua, va, m, n
     return b, ub, vb
 
-def nombre(a, b):
+def nombre(a:float, b:float) -> bool:
+    """ Teste a et b pour savoir si ils sont premiers entre eux ou non avec Bezout 
+
+    Args:
+        a (float): Le premier nombre
+        b (float): Le deuxième nombre
+
+    Returns:
+        bool: True si a et b sont premiers entre eux, False sinon
+    """      
     return bezout(a, b)[0] == 1
 
-def inverse(a, mod):
+def separe_texte(text:str) -> "list[str]":
+    """ Retourne une liste de texte séparé par des espaces
+
+    Args:
+        text (str): Le texte à analyser
+
+    Returns:
+        list[str]: Une liste de texte séparé par des espaces
+    """    
+    sub_texts = list()
+
+    for i in range(0, len(text), 2):
+        sub_texts.append(text[i:i+2])
+    
+    return sub_texts
+
+def inverse(a:int, mod:int) -> int or None:
+    """ Retourne l'inverse de a modulo mod
+
+    Args:
+        a (int): Le nombre dont on veut l'inverse
+        mod (int): Le modulo
+
+    Returns:
+        int or None: L'inverse de a modulo mod ou None si a et mod ne sont pas premiers entre eux
+    """    
     if nombre(a, mod):
         for chiffre in range(1, mod):
             if a * chiffre % mod == 1:
@@ -138,6 +327,11 @@ def inverse(a, mod):
     return None
 
 def decode_affine(texte:str, lang:str) -> None or "tuple[str, tuple[int, int]]":
+    """ Déchiffre un texte avec le chiffrement affine
+
+    Returns:
+        str: Le texte déchiffré ou None si le texte ne peut pas être déchiffré
+    """    
     res = None
 
     if lang in FREQUENCES_LETTRES:
@@ -160,6 +354,39 @@ def decode_affine(texte:str, lang:str) -> None or "tuple[str, tuple[int, int]]":
 
     return None if res is None else (res[0])
 
-# print ("AFFINE :") 
-# print(decode_affine("Huyzu Izxk u'hoovihvy eht h wzopvo. Vk hkkdph. Tzu Ahc phojdhvy pvudvy ivuly. Vk ezdtth du eozgzuw tzdevo, t'httvy whut tzu kvy, t'heedxhuy tdo tzu ezkzrqzu. Vk eovy du ozphu, vk k'zdiovy, vk kdy; phvt vk u'x thvtvtthvy jd'du vpmozlkvz rzugdt, vk mdyhvy h yzdy vutyhuy tdo du pzy wzuy vk vluzohvy kh tvluvgvrhyvzu. Vk hmhuwzuuh tzu ozphu tdo tzu kvy. Vk hkkh h tzu khihmz; vk pzdvkkh du lhuy jd'vk ehtth tdo tzu gozuy, tdo tzu rzd.", "fr"))
-print(trouver_cle_vigenere("Dwi gsftn seebvzx ezjg jzzo. Zp ldvzx npvlh. Tt jlzcqo jsy dvjmdbvj, wnzpke wi ilme. Qg wetavzx owpo. Yy jmlme qiumdbdege ujexlqo uy qipssfzb. Lr nimzpwwi, gpfa gfycl ll'yy ogrw, atpj wzcmu uf'ci ksnade, twcn gvznjeh bc'pe fzcmusy, vje pzqi, jsyvv kvzqn tsfxn. Uy niirp Didex-Ximkmy, ci tplxjkmd xgrmybdw wtoirplqo lr npvceyl llm ainjetb.", "fr"))
+def decode_hill(text:str, lang:str) -> None or "tuple[tuple[int, int, int, int]]":
+    """ Déchiffre un texte avec le chiffrement de Hill
+
+    Returns:
+        str: Le texte déchiffré ou None si le texte ne peut pas être déchiffré
+    """    
+    res = None
+    correct_text = convertir_en_texte(text, lang)
+
+    sub_texts = separe_texte(correct_text, 2)
+        
+    if len(correct_text) % 2 != 0:
+        sub_texts[-1] += "a"
+
+    if lang in FREQUENCES_LETTRES:
+         for a in range(1, 26):
+            for b in range(1, 26):
+                for c in range(1, 26):
+                    for d in range(1, 26):
+                        det_inv = inverse((a * d - b * c), LONGEUR_ALPHABET)
+                        if det_inv is not None:
+                            text_res = ""
+                            inv = (det_inv * d, det_inv * b * -1, det_inv * c * -1, det_inv * a)
+
+                            for sub in sub_texts:
+                                elem = (ord(sub[0]) - PREMIERE_INDEX, ord(sub[1]) - PREMIERE_INDEX)
+                                text_res += chr((elem[0] * inv[0] + elem[1] * inv[1]) % LONGEUR_ALPHABET + PREMIERE_INDEX) + chr((elem[0] * inv[2] + elem[1] * inv[3]) % LONGEUR_ALPHABET + PREMIERE_INDEX)
+
+                            diff = get_indice_de_coicidence(text_res)
+
+                            if res is None or res[1] < diff:
+                                res = (text_res, diff, (a, b, c, d))
+                            
+    return None if res is None else (res[0:-1], res[2])
+
+

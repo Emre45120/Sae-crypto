@@ -78,7 +78,7 @@ class Vigenere:
         clef = ""
         for i in range(longueur_cle) :
             portion = fragment[i] # On récupère la sous-chaine indice i
-            indice_lettre = 0 - Cesar.decalage(portion) # On calcule le décalage
+            indice_lettre = 0 - Cesar.trouver_decalage(portion) # On calcule le décalage
             clef += ALPHABET[indice_lettre] # On ajoute la lettre correspondante à la clé
         return clef
 

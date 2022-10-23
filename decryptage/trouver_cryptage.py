@@ -1,7 +1,11 @@
-from decryptage import *
+from cesar import Cesar
+from vigenere import Vigenere
+from affine import Affine
+from Hill import Hill
+from fonctions_general import Fct_gen
 
 
-def decryptage_ceasar(texte: str) -> str:
+def decode_cesar(texte: str) -> str:
     """Fonction qui permet de décrypter un texte crypté avec le codage de César
 
     Args:
@@ -10,8 +14,8 @@ def decryptage_ceasar(texte: str) -> str:
     Returns:
         str: Texte décrypté
     """    
-    decalage = trouver_decalage(texte)
-    return decode_cesar(texte, decalage)
+    decalage = Cesar.trouver_decalage(texte)
+    return Cesar.decode_cesar(texte, decalage)
 
 def decryptage_vigenere(texte: str) -> str:
     """ Fonction qui permet de décrypter un texte crypté avec le codage de Vigenère
@@ -21,8 +25,9 @@ def decryptage_vigenere(texte: str) -> str:
 
     Returns:
         str: Texte décrypté
-    """    
-    return decode_vigenere(texte, "fr")
+    """
+    cle = Vigenere.trouver_clef(texte)    
+    return Vigenere.decoder_vigenere(texte,cle)
 
 def decryptage_affine(texte: str) -> str:
     """Fonction qui permet de décrypter un texte crypté avec le codage affine
@@ -33,7 +38,7 @@ def decryptage_affine(texte: str) -> str:
     Returns:
         str: Texte décrypté
     """    
-    return decode_affine(texte,'fr')
+    return Affine.decode_affine(texte)
 
 def decryptage_hill(texte : str) -> str:
     """Fonction qui permet de décrypter un texte crypté avec le codage de Hill
@@ -44,7 +49,8 @@ def decryptage_hill(texte : str) -> str:
     Returns:
         str: Texte décrypté
     """    
-    return decode_hill(texte,'fr')
+    return Hill.decode_hill(texte)
+
 
 def decrypter():
     """Fonction principale qui permet de décrypter un texte en détéctant le cryptage utilisé
@@ -52,15 +58,15 @@ def decrypter():
     running = True
     while running:
         codageUtilise = None
-        texte=input("Entrez votre code à décrypter :   ")
+        texte= input("Entrez le code à décrypter : ")
         print("Décryptage en cours...")
-        texteCesar = decryptage_ceasar(texte)
-        texteVigenere = "Dwi gsftn seebvzx ezjg jzzo. Zp ldvzx npvlh. Tt jlzcqo jsy dvjmdbvj, wnzpke wi ilme. Qg wetavzx owpo. Yy jmlme qiumdbdege ujexlqo uy qipssfzb. Lr nimzpwwi, gpfa gfycl ll'yy ogrw, atpj wzcmu uf'ci ksnade, twcn gvznjeh bc'pe fzcmusy, vje pzqi, jsyvv kvzqn tsfxn. Uy niirp Didex-Ximkmy, ci tplxjkmd xgrmybdw wtoirplqo lr npvceyl llm ainjetb."
+        texteCesar = decode_cesar(texte)
+        texteVigenere = decryptage_vigenere(texte)
         texteAffine = decryptage_affine(texte)
-        # texteHill = test_avec_hill(texte)
-        # texteSubstitution = test_avec_substitution(texte)
-        codageUtilise=texte_le_plus_francais(texteCesar,texteVigenere,texteAffine)#,texteHill,texteSubstitution) 
-        if codageUtilise == "César":
+        texteHill = decryptage_hill(texte)
+        #texteSubstitution = test_avec_substitution(texte)
+        codageUtilise=texte_le_plus_francais(texteCesar,texteVigenere,texteAffine,texteHill[0][0])#,texteSubstitution) 
+        if codageUtilise == "Cesar":
             print("Le code a été crypté avec le codage de César")
             print("Le texte décodé est : ",texteCesar)
             running = False
@@ -72,9 +78,10 @@ def decrypter():
             print("Le code a été crypté avec le codage Affine")
             print("Le texte décodé est : ",texteAffine)
             running = False
-        # elif codageUtilise == "Hill":
-        #     print("Le code a été crypté avec le codage de Hill")
-        #     print("Le texte décodé est : ",texteHill)
+        elif codageUtilise == "Hill":
+            print("Le code a été crypté avec le codage de Hill")
+            print("Le texte décodé est : ",texteHill)
+            running = False
         # elif codageUtilise == "Substitution":
         #     print("Le code a été crypté avec le codage de Substitution")
         #     print("Le texte décodé est : ",texteSubstitution)
@@ -83,7 +90,7 @@ def decrypter():
             running = False
             
 
-def texte_le_plus_francais(texteCesar : str,texteVigenere : str,texteAffine : str) -> str: #,texteHill : str,texteSubstitution : str)
+def texte_le_plus_francais(texteCesar : str,texteVigenere : str,texteAffine : str,texteHill : str) -> str: #,texteHill : str,texteSubstitution : str)
     """ Fonction qui permet de détecter le cryptage utilisé en regardant lequel des textes décodés est le plus français
 
     Args:
@@ -95,10 +102,10 @@ def texte_le_plus_francais(texteCesar : str,texteVigenere : str,texteAffine : st
         str: Cryptage utilisé
     """    
     valeursCryptage = None
-    valeur_cesar = euclidian_diff(texteCesar,'fr') 
-    valeur_vigenere = euclidian_diff(texteVigenere,'fr')
-    valeurAffine = euclidian_diff(texteAffine,'fr')
-    # valeurHill = euclidian_diff(texteHill,'fr')
+    valeur_cesar = Fct_gen.euclidian_diff(texteCesar) 
+    valeur_vigenere = Fct_gen.euclidian_diff(texteVigenere)
+    valeurAffine = Fct_gen.euclidian_diff(texteAffine)
+    valeurHill = Fct_gen.euclidian_diff(texteHill)
     # valeurSubstitution = euclidian_diff(texteSubstitution,'fr')
     if valeursCryptage == None or texteCesar < valeursCryptage:
         valeursCryptage = valeur_cesar
@@ -109,9 +116,9 @@ def texte_le_plus_francais(texteCesar : str,texteVigenere : str,texteAffine : st
     if valeurAffine < valeursCryptage:
         valeursCryptage = valeurAffine
         cryptage = "Affine"
-    # if valeurHill < valeursCryptage:
-        # valeursCryptage = valeurHill
-        # cryptage = "Hill"
+    if valeurHill < valeursCryptage:
+        valeursCryptage = valeurHill
+        cryptage = "Hill"
     # if valeurSubstitution < valeursCryptage:
         # valeursCryptage = valeurSubstitution
         # cryptage = "Substitution"

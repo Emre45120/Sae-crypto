@@ -66,7 +66,7 @@ class Cesar :
         decalage = None
         for d in range(1,26):
             texte = Cesar.decode_cesar(texteChiffre, d)
-            valeurEuclid = Fct_gen.euclidian_diff(texte,'fr')
+            valeurEuclid = Fct_gen.euclidian_diff(texte)
             if max is None or valeurEuclid < max:
                 max = valeurEuclid
                 decalage = d

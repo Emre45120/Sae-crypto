@@ -15,7 +15,7 @@ class Vigenere:
         
         :param message: le message à analyser
         :return: L'indice de coïncidence du message.
-        """
+        """  
         num = 0
         texte = Fct_gen.traiter_texte(message)
         dico = Fct_gen.dico_freq(texte)

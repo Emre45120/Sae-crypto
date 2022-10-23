@@ -49,6 +49,8 @@ def decode_cesar(texte:str, decalage:int) -> str:
             resultat += lettre   
     return resultat
 
+
+
 def trouver_decalage(texteChiffre:str) -> int:
     """ Permet de trouver le décalage utilisé pour chiffrer un texte
 
@@ -89,6 +91,8 @@ def caesar(text:str, cle:int) -> str:
             result += lettre
 
     return result
+
+
 
 def convertir_en_texte(text:str) -> str:
     """ Convertit un texte en minuscule et enlève les caractères spéciaux

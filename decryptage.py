@@ -93,7 +93,6 @@ def caesar(text:str, cle:int) -> str:
     return result
 
 
-
 def convertir_en_texte(text:str) -> str:
     """ Convertit un texte en minuscule et enlève les caractères spéciaux
 
@@ -265,7 +264,7 @@ def convertir_en_texte(text:str, lang:str) -> str:
     Returns:
         str: Le texte sans les caractères spéciaux
     """    
-    return "".join([c for c in text if est_une_lettre(c, lang)]).lower()
+    return "".join([c for c in text.lower() if est_une_lettre(c, lang)])
 
 def bezout(a:float, b:float) -> tuple:
     """ Retourne le PGCD de a et b ainsi que les coefficients de Bézout
@@ -367,7 +366,7 @@ def decode_hill(text:str, lang:str) -> None or "tuple[tuple[int, int, int, int]]
     res = None
     correct_text = convertir_en_texte(text, lang)
 
-    sub_texts = separe_texte(correct_text, 2)
+    sub_texts = separe_texte(correct_text)
         
     if len(correct_text) % 2 != 0:
         sub_texts[-1] += "a"
@@ -393,4 +392,7 @@ def decode_hill(text:str, lang:str) -> None or "tuple[tuple[int, int, int, int]]
                             
     return None if res is None else (res[0:-1], res[2])
 
+
+texte = "Sop u'dffrmtfe oz qvigpjcm, bh nnaqhd iw hcbvrl dvercy, h d'youcxlmdc zpzirn, ay eg xpzzht, qy eg xohirgxpb, ymsu lstlhf bh zhkhakc, z'lbnnecvz, layoanfe bh bidv g'dlky. Oy x'txdwiyoh, gnvxnnt w'txwlkhr g'bh uuhr oju, nyor v'nnaqhd dwvz akl ojr, erdpzhyomennv innr vn nmim tqvfe om'xl yof qv x'cmksxluzf."
+print(decode_hill(texte, "fr"))
 

@@ -1,4 +1,4 @@
-# Nous avons d'étudier le fonctionnement de l'algorithme de Diffie-Hellman
+# Nous allons d'étudier le fonctionnement de l'algorithme de Diffie-Hellman
 
 # 1) Détaillez et expliquez un de ces deux protocoles et explicitez en particulier son lien avec le problème du logarithme discret.
 
@@ -19,4 +19,23 @@ def Diffie_Hellman(p, g, S1, S2):
     K2 = (A**S2) % p
     return K1, K2
 
-print(Diffie_Hellman(23, 4, 13, 10))
+# 3) Pour le protocole choisi, explicitez une méthode en “force brute” possible en théorie, 
+#    si on intercepte les messages chiffrés en connaissant la taille de la clef, 
+#    mais difficilement exploitable en pratique.
+#
+#    Une méthode en force brute possible est d'à partir de A, p, g et B calculer toutes les valeurs possibles de H pour retrouver B.
+#    C'est à dire de tester une par une les valeurs de H jusqu'à trouver g^H mod p = B
+#    Cette méthode peut être exploitable lorsque la taille de la clef est petite cependant sur de grands nombre cette méthode est en effet difficilement exploitable
+#    car cela prendrait un trop grand temps avant de retrouver la clef mais aussi beaucoup de ressources. 
+
+def brute_force_diffie_hellman(p, g, A, B):
+    H = 0
+    while (g**H) % p != B:
+        H += 1
+    return H
+
+crypt = Diffie_Hellman(23, 4, 13, 10)
+#print(crypt)
+print(brute_force_diffie_hellman(23, 4, crypt[0], crypt[1]))
+
+

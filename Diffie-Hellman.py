@@ -1,10 +1,14 @@
+import random
+
+
 # Nous avons d'étudier le fonctionnement de l'algorithme de Diffie-Hellman
 
 # 1) Détaillez et expliquez un de ces deux protocoles et explicitez en particulier son lien avec le problème du logarithme discret.
 
 # Le principe de Diffie-Hellman est de permettre à deux communicants d'échanger de manière sécurisée. 
-# Pour cela, il faut que les deux communicants aient un secret commun, c'est-à-dire un nombre premier p et g commun à ces deux communicants.
-# Ces deux communicants vont ensuite chacun choisir une cle privée aléatoire D et H
+# Pour cela, ils doivent avoir un nombre premier commun p qui doit valider q = 2p + 1 avec q premier.   
+#  et g commun à ces deux communicants.    
+# Ces deux communicants vont ensuite chacun choisir une cle privée aléatoire D et H respectivement.
 # Le premier communicant va calculer A = g^S mod p
 # il va ensuite l'envoyer au deuxième communicant,qui va calculer B = g^S mod p
 # Le 2eme communicant va envoyer son résultat au 1er communicant
@@ -30,6 +34,34 @@ def Diffie_Hellman(p : int, g : int, S1 : int, S2 : int) -> int:
     K2 = (A**S2) % p # calcul de la clef commune
     return K1, K2
 
+def est_premier(nombre : int) -> bool:
+    """Verifie si un nombre est premier
+
+    Args:
+        nombre (int): un entier
+
+    Returns:
+        boolean: retourne True si le nombre est premier, False sinon
+    """    
+    for i in range(2,nombre):
+        if nombre%i==0: # si le nombre est divisible par un nombre entre 2 et lui meme
+            return False
+    return True
+
+def q_est_premier(p : int) -> bool:
+    """Verifie si q est premier
+
+    Args:
+        p (int): un nombre premier
+
+    Returns:
+        boolean: retourne True si q est premier, False sinon
+    """    
+    q = (2*p) + 1
+    return est_premier(q)
+
+
+
 
 # 3) Pour le protocole choisi, explicitez une méthode en “force brute” possible en théorie, 
 #    si on intercepte les messages chiffrés en connaissant la taille de la clef, 
@@ -46,43 +78,63 @@ def brute_force_diffie_helman(p, g, B):
             return i
 
 
-
-
-def est_premier(nombre : int) -> bool:
-    """Verifie si un nombre est premier
-
-    Args:
-        nombre (int): un entier
-
-    Returns:
-        boolean: retourne True si le nombre est premier, False sinon
-    """    
-    for i in range(2,nombre):
-        if nombre%i==0: # si le nombre est divisible par un nombre entre 2 et lui meme
-            return False
-    return True
-
 def affichage() -> None:
     p_est_premier = True
-    q_est_premier = True
+    g_est_premier = True
     diffie = True
-    while diffie:
-        while p_est_premier:
-            p = int(input("Entrez un nombre premier p : "))
-            if est_premier(p):
-                p_est_premier = False
-            else:
-                print("Ce nombre n'est pas premier")
-        while q_est_premier:
-            q = int(input("Entrez un nombre premier q : "))
-            if est_premier(q):
-                q_est_premier = False
-            else:
-                print("Ce nombre n'est pas premier")
-        D = int(input("Communicant 1,entrez une clef privée D : "))
-        H = int(input("Communicant 2,entrez une clef privée H : "))
-        print(Diffie_Hellman(p, q, D, H))
-        diffie = False
+    print("-------------------------------------------------")
+    print("| Bienvenue dans le programme de Diffie-Hellman |")
+    print("-------------------------------------------------")
+    print("1. Simuler le protocole de Diffie-Hellman avec des chiffres choisis")
+    print("2. Simuler le protocole de Diffie-Hellman avec des chiffres aléatoire")
+    choix = input("Que voulez vous faire ? ")
+    if choix == "1":
+        while diffie: # tant que les deux communicants n'ont pas la meme clef
+            while p_est_premier: # tant que p n'est pas premier
+                p = int(input("Entrez un nombre premier p : "))
+                if est_premier(p):
+                    if q_est_premier(p):
+                        p_est_premier = False
+                    else:
+                        print("ce nombre ne valide pas la condition q = 2p + 1 avec q premier")
+                else:
+                    print("Ce nombre n'est pas premier")
+            while g_est_premier: # tant que g n'est pas premier
+                g = int(input("Entrez un nombre premier g : "))
+                if est_premier(g):
+                    g_est_premier = False
+                else:
+                    print("Ce nombre n'est pas premier")
+            D = int(input("Communicant 1,entrez une clef privée D : "))
+            H = int(input("Communicant 2,entrez une clef privée H : "))
+            print(Diffie_Hellman(p, g, D, H))
+            diffie = False
+    elif choix == "2":
+        while diffie: # tant que les deux communicants n'ont pas la meme clef
+            while p_est_premier: # tant que p n'est pas premier
+                p = random.randint(2,1000)
+                if est_premier(p):
+                    if q_est_premier(p):
+                        p_est_premier = False
+                        print("Votre nombre premier p est : ",p)
+                    else:
+                        print("ce nombre ne valide pas la condition q = 2p + 1 avec q premier")
+                else:
+                    print("Ce nombre n'est pas premier")
+            while g_est_premier: # tant que g n'est pas premier
+                g = random.randint(2,1000)
+                if est_premier(g):
+                    g_est_premier = False
+                    print("Votre nombre premier g est : ",g)
+                else:
+                    print("Ce nombre n'est pas premier")
+            D = random.randint(2,1000)
+            print("Votre clef privée D est : ",D)
+            H = random.randint(2,1000)
+            print("Votre clef privée H est : ",H)
+            print(Diffie_Hellman(p, g, D, H))
+            diffie = False
+
 
         
 

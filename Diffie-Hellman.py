@@ -1,5 +1,6 @@
 import random
 import sys
+import math
 
 
 # Nous avons d'étudier le fonctionnement de l'algorithme de Diffie-Hellman
@@ -169,6 +170,7 @@ def encode_diffie(p : int,message : str,C : int,C2 : int) -> int:
     if est_premier(p):
         if q_est_premier(p):
             message = convert_to_int(message)
+            print(message)
             if message > C and C2:
                 encodageNiveaux1 = (message**C) % p
                 print("Encodage niveau 1 : ",encodageNiveaux1)
@@ -195,15 +197,36 @@ def decode_diffie(p : int,message : int,C : int,C2 : int) -> int:
             print("ce nombre ne valide pas la condition q = 2p + 1 avec q premier")
     else:
         print("Ce nombre n'est pas premier")
-
-def meet_in_the_middle_diffie_helman(p):
-    K1 = None
-    
-
-
-
         
+def meet_in_the_middle(p : int,message : str,messageChiffre : str) -> int or None:
+    """ Permet de trouver les clés de chiffrement
 
+    Args:
+        p (int): le modulo
+        message (str): le message pas crypte
+        messageChiffre (str): le message crypter
+
+    Returns:
+        None: None si clé pas trouvé sinon les clé
+    """    
+    puissance = math.pow(2,12)
+    message = convert_to_int(message)
+    messageChiffre = (convert_to_int(messageChiffre))
+    for i in range(1,puissance):
+        res_cle1 = (math.pow(message,i) % p)
+        for j in range(1,puissance):
+            res_cle2 = (math.pow(messageChiffre,j) % p)
+            if res_cle1 == res_cle2:
+                print("la clé K1 est ",i," la clé K2 est ",j)
+                return (i,j)
+    return None
+    
+    
+# print(convert_to_int("emre"))
+# print(encode_diffie(89,"emre",1023,1234))
+# print(convert_to_int("X"))
+# print(math.pow(2,12))
+    
 if __name__ == "__main__":
     affichage()
     

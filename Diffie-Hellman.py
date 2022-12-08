@@ -1,4 +1,5 @@
 import random
+import sys
 
 
 # Nous avons d'étudier le fonctionnement de l'algorithme de Diffie-Hellman
@@ -63,8 +64,8 @@ def q_est_premier(p : int) -> bool:
 
 
 
-# 3) Pour le protocole choisi, explicitez une méthode en “force brute” possible en théorie, 
-#    si on intercepte les messages chiffrés en connaissant la taille de la clef, 
+# 3) Pour le protocole choisi, explicitez une me?thode en "force brute" possible en the?orie, 
+#    si on intercepte les messages chiffre?s en connaissant la taille de la clef, 
 #    mais difficilement exploitable en pratique.
 #
 #    Une méthode en force brute possible est d'à partir de A, p, g et B calculer toutes les valeurs possibles de H pour retrouver B.
@@ -138,22 +139,62 @@ def affichage() -> None:
             print(Diffie_Hellman(p, g, D, H))
             diffie = False
 
-def encode_diffie(p,g,C,C2):
+def convert_to_int(mess : str) -> int:
+    """Convertit un message en entier
+
+    Args:
+        mess (str): un message
+
+    Returns:
+        int: retourne un entier
+    """    
+    mess =  mess.encode(encoding="utf-8") 
+    return int.from_bytes(mess,byteorder=sys.byteorder)
+ 
+def convert_to_str(mess : int) -> str:
+    """Convertit un entier en message
+
+    Args:
+        mess (int): un entier
+
+    Returns:
+        str: retourne un message
+    """
+    mess = mess.to_bytes(len(str(mess)),byteorder=sys.byteorder)    
+    return mess.decode(encoding="utf-8")
+
+
+
+def encode_diffie(p : int,message : str,C : int,C2 : int) -> int:
     if est_premier(p):
         if q_est_premier(p):
-            if g < p:
-                encodageNiveaux1 = (g**C) % p
+            message = convert_to_int(message)
+            if message > C and C2:
+                encodageNiveaux1 = (message**C) % p
                 print("Encodage niveau 1 : ",encodageNiveaux1)
                 encodageNiveaux2 = (encodageNiveaux1**C2) % p
                 print("Encodage niveau 2 : ",encodageNiveaux2)
+                return convert_to_str(encodageNiveaux2)
             else:
-                print("g doit être inférieur à p")
+                print("Votre message M doit être inférieur à C et C2")
         else:
             print("ce nombre ne valide pas la condition q = 2p + 1 avec q premier")
     else:
         print("Ce nombre n'est pas premier")
 
-
+def decode_diffie(p : int,message : int,C : int,C2 : int) -> int:
+    if est_premier(p):
+        if q_est_premier(p):
+                decodageNiveaux2 = (message**C2) % p
+                print("Décodage niveau 2 : ",decodageNiveaux2)
+                decodageNiveaux1 = (decodageNiveaux2**C) % p
+                print("Décodage niveau 1 : ",decodageNiveaux1)
+                message = convert_to_str(decodageNiveaux1)
+                print("Message decodé: ",message)
+        else:
+            print("ce nombre ne valide pas la condition q = 2p + 1 avec q premier")
+    else:
+        print("Ce nombre n'est pas premier")
 
 def meet_in_the_middle_diffie_helman(p):
     K1 = None

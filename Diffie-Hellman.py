@@ -82,6 +82,7 @@ def affichage() -> None:
     p_est_premier = True
     g_est_premier = True
     diffie = True
+    nombreP = None
     print("-------------------------------------------------")
     print("| Bienvenue dans le programme de Diffie-Hellman |")
     print("-------------------------------------------------")
@@ -94,17 +95,18 @@ def affichage() -> None:
                 p = int(input("Entrez un nombre premier p : "))
                 if est_premier(p):
                     if q_est_premier(p):
+                        nombreP = p
                         p_est_premier = False
                     else:
                         print("ce nombre ne valide pas la condition q = 2p + 1 avec q premier")
                 else:
                     print("Ce nombre n'est pas premier")
             while g_est_premier: # tant que g n'est pas premier
-                g = int(input("Entrez un nombre premier g : "))
-                if est_premier(g):
+                g = int(input("Entrez un nombre aléatoire inférieur à p : "))
+                if g < nombreP:
                     g_est_premier = False
                 else:
-                    print("Ce nombre n'est pas premier")
+                    print("Ce nombre n'est pas inférieur à p")
             D = int(input("Communicant 1,entrez une clef privée D : "))
             H = int(input("Communicant 2,entrez une clef privée H : "))
             print(Diffie_Hellman(p, g, D, H))
@@ -115,6 +117,7 @@ def affichage() -> None:
                 p = random.randint(2,1000)
                 if est_premier(p):
                     if q_est_premier(p):
+                        nombreP = p
                         p_est_premier = False
                         print("Votre nombre premier p est : ",p)
                     else:
@@ -123,17 +126,39 @@ def affichage() -> None:
                     print("Ce nombre n'est pas premier")
             while g_est_premier: # tant que g n'est pas premier
                 g = random.randint(2,1000)
-                if est_premier(g):
+                if g < nombreP:
                     g_est_premier = False
-                    print("Votre nombre premier g est : ",g)
+                    print("Votre nombre g est : ",g)
                 else:
-                    print("Ce nombre n'est pas premier")
+                    print("Ce nombre n'est pas inférieur à p")
             D = random.randint(2,1000)
             print("Votre clef privée D est : ",D)
             H = random.randint(2,1000)
             print("Votre clef privée H est : ",H)
             print(Diffie_Hellman(p, g, D, H))
             diffie = False
+
+def encode_diffie(p,g,C,C2):
+    if est_premier(p):
+        if q_est_premier(p):
+            if g < p:
+                encodageNiveaux1 = (g**C) % p
+                print("Encodage niveau 1 : ",encodageNiveaux1)
+                encodageNiveaux2 = (encodageNiveaux1**C2) % p
+                print("Encodage niveau 2 : ",encodageNiveaux2)
+            else:
+                print("g doit être inférieur à p")
+        else:
+            print("ce nombre ne valide pas la condition q = 2p + 1 avec q premier")
+    else:
+        print("Ce nombre n'est pas premier")
+
+
+
+def meet_in_the_middle_diffie_helman(p):
+    K1 = None
+    
+
 
 
         

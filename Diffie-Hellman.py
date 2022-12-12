@@ -1,6 +1,7 @@
 import random
 import sys
 import math
+import timeit
 
 
 
@@ -140,6 +141,7 @@ def affichage() -> None:
             print("Votre clef privée H est : ",H)
             print(Diffie_Hellman(p, g, D, H))
             diffie = False
+        
 
         
 def baby_step_giant_step(g : int,h : int,p : int) -> int or None:
@@ -159,7 +161,6 @@ def baby_step_giant_step(g : int,h : int,p : int) -> int or None:
     
     for i in range(n):
         t[pow(g,i,p)]=i
-        print ("Baby step",t)
         
     c = pow(g,n*(p - 2),p)
     
@@ -169,7 +170,11 @@ def baby_step_giant_step(g : int,h : int,p : int) -> int or None:
             return j * n + t[y]
     return None
 
+print(baby_step_giant_step(1187,1147,1223))
+print(brute_force_diffie_helman(1223,1187,1147))
 
+print(timeit.timeit("baby_step_giant_step(100,171,179)",setup = "from __main__ import baby_step_giant_step ",number=1))
+print(timeit.timeit("brute_force_diffie_helman(179,170,171)",setup = "from __main__ import brute_force_diffie_helman ",number=1))
 
 if __name__ == "__main__":
     affichage()

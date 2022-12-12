@@ -3,6 +3,7 @@ import sys
 import math
 
 
+
 # Nous avons d'étudier le fonctionnement de l'algorithme de Diffie-Hellman
 
 # 1) Détaillez et expliquez un de ces deux protocoles et explicitez en particulier son lien avec le problème du logarithme discret.
@@ -140,93 +141,36 @@ def affichage() -> None:
             print(Diffie_Hellman(p, g, D, H))
             diffie = False
 
-def convert_to_int(mess : str) -> int:
-    """Convertit un message en entier
-
-    Args:
-        mess (str): un message
-
-    Returns:
-        int: retourne un entier
-    """    
-    mess =  mess.encode(encoding="utf-8") 
-    return int.from_bytes(mess,byteorder=sys.byteorder)
- 
-def convert_to_str(mess : int) -> str:
-    """Convertit un entier en message
-
-    Args:
-        mess (int): un entier
-
-    Returns:
-        str: retourne un message
-    """
-    mess = mess.to_bytes(len(str(mess)),byteorder=sys.byteorder)    
-    return mess.decode(encoding="utf-8")
-
-
-
-def encode_diffie(p : int,message : str,C : int,C2 : int) -> int:
-    if est_premier(p):
-        if q_est_premier(p):
-            message = convert_to_int(message)
-            print(message)
-            if message > C and C2:
-                encodageNiveaux1 = (message**C) % p
-                print("Encodage niveau 1 : ",encodageNiveaux1)
-                encodageNiveaux2 = (encodageNiveaux1**C2) % p
-                print("Encodage niveau 2 : ",encodageNiveaux2)
-                return convert_to_str(encodageNiveaux2)
-            else:
-                print("Votre message M doit être inférieur à C et C2")
-        else:
-            print("ce nombre ne valide pas la condition q = 2p + 1 avec q premier")
-    else:
-        print("Ce nombre n'est pas premier")
-
-def decode_diffie(p : int,message : int,C : int,C2 : int) -> int:
-    if est_premier(p):
-        if q_est_premier(p):
-                decodageNiveaux2 = (message**C2) % p
-                print("Décodage niveau 2 : ",decodageNiveaux2)
-                decodageNiveaux1 = (decodageNiveaux2**C) % p
-                print("Décodage niveau 1 : ",decodageNiveaux1)
-                message = convert_to_str(decodageNiveaux1)
-                print("Message decodé: ",message)
-        else:
-            print("ce nombre ne valide pas la condition q = 2p + 1 avec q premier")
-    else:
-        print("Ce nombre n'est pas premier")
         
-def meet_in_the_middle(p : int,message : str,messageChiffre : str) -> int or None:
-    """ Permet de trouver les clés de chiffrement
+def baby_step_giant_step(g : int,h : int,p : int) -> int or None:
+    """ methode bsgs sur diffie hellman
 
     Args:
-        p (int): le modulo
-        message (str): le message pas crypte
-        messageChiffre (str): le message crypter
+        g (int): _description_
+        h (int): _description_
+        p (int): _description_
 
     Returns:
-        None: None si clé pas trouvé sinon les clé
+        int or None: _description_
     """    
-    puissance = math.pow(2,12)
-    message = convert_to_int(message)
-    messageChiffre = (convert_to_int(messageChiffre))
-    for i in range(1,puissance):
-        res_cle1 = (math.pow(message,i) % p)
-        for j in range(1,puissance):
-            res_cle2 = (math.pow(messageChiffre,j) % p)
-            if res_cle1 == res_cle2:
-                print("la clé K1 est ",i," la clé K2 est ",j)
-                return (i,j)
+    n = math.ceil(math.sqrt(p-1))
+    print("N ",n)
+    t = {}
+    
+    for i in range(n):
+        t[pow(g,i,p)]=i
+        print ("Baby step",t)
+        
+    c = pow(g,n*(p - 2),p)
+    
+    for j in range(n):
+        y = (h * pow(c,j,p)) % p
+        if y in t:
+            return j * n + t[y]
     return None
-    
-    
-# print(convert_to_int("emre"))
-# print(encode_diffie(89,"emre",1023,1234))
-# print(convert_to_int("X"))
-# print(math.pow(2,12))
-    
+
+
+
 if __name__ == "__main__":
     affichage()
     

@@ -146,12 +146,12 @@ def baby_step_giant_step(g : int,h : int,p : int) -> int or None:
     """ methode bsgs sur diffie hellman
 
     Args:
-        g (int): _description_
-        h (int): _description_
-        p (int): _description_
+        g (int): chiffre premier inférieur a p
+        h (int): chiffre qui est le res du calcul (g^x mod p)
+        p (int): chiffre premier p
 
     Returns:
-        int or None: _description_
+        int or None: la clé secrete ou None si pas trouvé
     """    
     n = math.ceil(math.sqrt(p-1))
     print("N ",n)

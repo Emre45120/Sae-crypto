@@ -76,7 +76,17 @@ def q_est_premier(p : int) -> bool:
 #    Cette méthode peut être exploitable lorsque la taille de la clef est petite cependant sur de grands nombre cette méthode est en effet difficilement exploitable
 #    car cela prendrait un trop grand temps avant de retrouver la clef mais aussi beaucoup de ressources. 
 
-def brute_force_diffie_helman(p, g, B):
+def brute_force_diffie_helman(p : int, g : int, B : int) -> int:
+    """ Cette fonction permet de retrouver la clef privée H à partir de B ( ou A ), p, g
+
+    Args:
+        p (int):  un nombre premier commun aux deux communicants
+        g (int):  un nombre premier commun inférieur à p aux deux communicants
+        B (int):  le résultat de g^H mod p
+
+    Returns:
+        int: retourne la clef privée 
+    """    
     for i in range(p):
         if B == g**i % p:
             return i
@@ -157,17 +167,18 @@ def baby_step_giant_step(g : int,h : int,p : int) -> int or None:
     """    
     n = math.ceil(math.sqrt(p-1))
     print("N ",n)
-    t = {}
+    dico = {}
     
     for i in range(n):
-        t[pow(g,i,p)]=i
+        dico[pow(g,i,p)]=i
+        print("baby step",dico)
         
     c = pow(g,n*(p - 2),p)
     
     for j in range(n):
-        y = (h * pow(c,j,p)) % p
-        if y in t:
-            return j * n + t[y]
+        cleProbable = (h * pow(c,j,p)) % p
+        if cleProbable in dico:
+            return j * n + dico[cleProbable]
     return None
 
 print(baby_step_giant_step(1187,1147,1223))

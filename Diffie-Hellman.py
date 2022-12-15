@@ -1,24 +1,10 @@
 import random
-import sys
 import math
 import timeit
 
 
-
-# Nous avons d'étudier le fonctionnement de l'algorithme de Diffie-Hellman
-
-# 1) Détaillez et expliquez un de ces deux protocoles et explicitez en particulier son lien avec le problème du logarithme discret.
-
-# Le principe de Diffie-Hellman est de permettre à deux communicants d'échanger de manière sécurisée. 
-# Pour cela, ils doivent avoir un nombre premier commun p qui doit valider q = 2p + 1 avec q premier.   
-#  et g commun à ces deux communicants.    
-# Ces deux communicants vont ensuite chacun choisir une cle privée aléatoire D et H respectivement.
-# Le premier communicant va calculer A = g^S mod p
-# il va ensuite l'envoyer au deuxième communicant,qui va calculer B = g^S mod p
-# Le 2eme communicant va envoyer son résultat au 1er communicant
-# les deux communicants vont ensuite calculer la même clef K = B^D mod p = A^H mod p, qui ne peut être connue que par les deux communicants car ils faut les deux clefs privées pour la calculer
-
-# 2) Implémentez un programme permettant de simuler le protocole de Diffie-Hellman.
+# le code contient un menu qui vous permet de tester l'algorithme de Diffie Hellman avec des valeurs que vous voulez ou alors ave des valeurs genere aleatoirement.
+# le code contient aussi 2 print ( qui sont en commentaire ) qui teste la méthode bruteForce et Baby Step Giant Step avec 2 prints associés qui affichent leur temps de réalisation (sont en commentaires).
 
 def Diffie_Hellman(p : int, g : int, S1 : int, S2 : int) -> int:
     """ Cette fonction permet de simuler le protocole de Diffie-Hellman
@@ -65,17 +51,6 @@ def q_est_premier(p : int) -> bool:
     return est_premier(q)
 
 
-
-
-# 3) Pour le protocole choisi, explicitez une me?thode en "force brute" possible en the?orie, 
-#    si on intercepte les messages chiffre?s en connaissant la taille de la clef, 
-#    mais difficilement exploitable en pratique.
-#
-#    Une méthode en force brute possible est d'à partir de A, p, g et B calculer toutes les valeurs possibles de H pour retrouver B.
-#    C'est à dire de tester une par une les valeurs de H jusqu'à trouver g^H mod p = B
-#    Cette méthode peut être exploitable lorsque la taille de la clef est petite cependant sur de grands nombre cette méthode est en effet difficilement exploitable
-#    car cela prendrait un trop grand temps avant de retrouver la clef mais aussi beaucoup de ressources. 
-
 def brute_force_diffie_helman(p : int, g : int, B : int) -> int:
     """ Cette fonction permet de retrouver la clef privée H à partir de B ( ou A ), p, g
 
@@ -97,11 +72,12 @@ def affichage() -> None:
     g_est_premier = True
     diffie = True
     nombreP = None
-    print("-------------------------------------------------")
-    print("| Bienvenue dans le programme de Diffie-Hellman |")
-    print("-------------------------------------------------")
-    print("1. Simuler le protocole de Diffie-Hellman avec des chiffres choisis")
-    print("2. Simuler le protocole de Diffie-Hellman avec des chiffres aléatoire")
+    print("------------------------------------------------------------------------")
+    print("| Bienvenue dans le programme de Diffie-Hellman                         |")
+    print("------------------------------------------------------------------------")
+    print("| 1. Simuler le protocole de Diffie-Hellman avec des chiffres choisis   |")
+    print("| 2. Simuler le protocole de Diffie-Hellman avec des chiffres aléatoire |")
+    print("------------------------------------------------------------------------")
     choix = input("Que voulez vous faire ? ")
     if choix == "1":
         while diffie: # tant que les deux communicants n'ont pas la meme clef
@@ -166,12 +142,10 @@ def baby_step_giant_step(g : int,h : int,p : int) -> int or None:
         int or None: la clé secrete ou None si pas trouvé
     """    
     n = math.ceil(math.sqrt(p-1))
-    print("N ",n)
     dico = {}
     
     for i in range(n):
         dico[pow(g,i,p)]=i
-        print("baby step",dico)
         
     c = pow(g,n*(p - 2),p)
     
@@ -181,11 +155,11 @@ def baby_step_giant_step(g : int,h : int,p : int) -> int or None:
             return j * n + dico[cleProbable]
     return None
 
-print(baby_step_giant_step(1187,1147,1223))
-print(brute_force_diffie_helman(1223,1187,1147))
+# print(baby_step_giant_step(1187,1147,1223))
+# print(brute_force_diffie_helman(1223,1187,1147))
 
-print(timeit.timeit("baby_step_giant_step(100,171,179)",setup = "from __main__ import baby_step_giant_step ",number=1))
-print(timeit.timeit("brute_force_diffie_helman(179,170,171)",setup = "from __main__ import brute_force_diffie_helman ",number=1))
+# print(timeit.timeit("baby_step_giant_step(100,171,179)",setup = "from __main__ import baby_step_giant_step ",number=1))
+# print(timeit.timeit("brute_force_diffie_helman(179,170,171)",setup = "from __main__ import brute_force_diffie_helman ",number=1))
 
 if __name__ == "__main__":
     affichage()
